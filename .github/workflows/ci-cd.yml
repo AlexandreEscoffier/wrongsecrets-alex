@@ -1,0 +1,49 @@
+name: DevSecOps CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-test-scan:
+
+    runs-on: windows-latest
+
+    steps:
+
+    # 1. Récupérer le code
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 2. Installer Java (nécessaire pour WrongSecrets)
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    # 3. Scanner les secrets (Gitleaks)
+    - name: Run Gitleaks
+      uses: gitleaks/gitleaks-action@v2
+
+    # 4. Build Maven
+    - name: Build project
+      run: mvn clean package
+
+    # 5. Afficher les secrets (juste pour test pédagogique)
+    - name: Show secrets (test only)
+      run: echo "API_KEY is available"
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
+
+    # 6. Test DB password (simulation)
+    - name: Check DB password exists
+      run: echo "DB password loaded"
+      env:
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+    # 7. JWT secret check
+    - name: Check JWT secret
+      run: echo "JWT secret loaded"
+      env:
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}

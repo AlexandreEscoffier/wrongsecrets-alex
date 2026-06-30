@@ -83,7 +83,6 @@ jobs:
         run: |
           export VAULT_ADDR=http://127.0.0.1:8200
           export VAULT_TOKEN=myroot
-          vault secrets enable -path=secret kv-v2
           vault kv put secret/wrongsecrets DB_PASSWORD="CIDemoPassword123!" API_KEY="sk-ci-demo-456"
       - name: Read secrets and build
         run: |

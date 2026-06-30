@@ -54,6 +54,7 @@ jobs:
   vault-demo:
     needs: secret-scan
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     services:
       vault:
         image: hashicorp/vault:latest
@@ -78,7 +79,14 @@ jobs:
         run: |
           export VAULT_ADDR=http://127.0.0.1:8200
           export VAULT_TOKEN=myroot
-          until vault status; do sleep 2; done
+          for i in $(seq 1 15); do
+            if vault status; then
+              echo "Vault est pret."
+              break
+            fi
+            echo "Vault pas encore pret, tentative $i..."
+            sleep 2
+          done
       - name: Create secrets in Vault
         run: |
           export VAULT_ADDR=http://127.0.0.1:8200

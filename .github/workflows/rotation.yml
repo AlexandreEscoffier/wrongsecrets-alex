@@ -1,0 +1,20 @@
+name: Secret Rotation
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"  # chaque dimanche
+  workflow_dispatch:
+
+jobs:
+  rotate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Rotate secret (simulation)
+        run: |
+          echo "Rotating DB_PASSWORD..."
+          echo "New secret generated"
+
+      - name: Update GitHub Secret (conceptual)
+        run: |
+          echo "In real setup, use GitHub API or Vault"
